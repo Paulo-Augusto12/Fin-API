@@ -34,7 +34,7 @@ function getBalance(statement) {
     }
   }, 0);
 
-  return balance
+  return balance;
 }
 
 // Criação de um cliente
@@ -99,19 +99,37 @@ app.post("/withdraw", verifyIfExistAcountCpf, (req, res) => {
 
   const balance = getBalance(customer.statement);
 
-  if(balance < amount){
-    return res.status(400).json({ERRO: 'Saldo insuficiente'})
+  if (balance < amount) {
+    return res.status(400).json({ ERRO: "Saldo insuficiente" });
   }
 
   const statementOperation = {
     amount,
-    created_at: new Date (),
-    type: "debit"
-  }
+    created_at: new Date(),
+    type: "debit",
+  };
 
-  customer.statement.push(statementOperation)
+  customer.statement.push(statementOperation);
 
-  return res.status(201).send()
+  return res.status(201).send();
+});
+
+// listar um extrato por data
+
+app.get("/statement/date", verifyIfExistAcountCpf, (req, res) => {
+  const { customer } = req;
+
+  const { date } = req.query;
+
+  const dateFormat = new Date(date + " 00:00");
+
+  const statement = customer.statement.filter(
+    (statement) =>
+      statement.created_at.toDateString() ===
+      new Date(dateFormat).toDateString()
+  );
+
+  return res.json(statement);
 });
 
 app.listen(3333);
