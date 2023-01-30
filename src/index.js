@@ -7,6 +7,24 @@ app.use(express.json());
 
 const customers = [];
 
+// Middleware de verificação de conta por cpf
+
+function verifyIfExistAcountCpf(req, res, next) {
+  const { cpf } = req.headers;
+
+  const customer = customers.find((customer) => customer.cpf === cpf);
+
+  if (!customer) {
+    return res
+      .status(400)
+      .json({ ERRO: "O cliente informado não possui uma conta" });
+  }
+
+  req.customer = customer;
+
+  return next();
+}
+
 // Criação de um cliente
 
 app.post("/accounts", (req, res) => {
@@ -34,18 +52,10 @@ app.get("/accounts", (req, res) => {
   res.status(200).send(customers);
 });
 
-// listar um extrato de um cliente
+// Buscar e listar um extrato de cliente
 
-app.get("/statement", (req, res) => {
-  const { cpf } = req.headers;
-
-  const customer = customers.find((customer) => customer.cpf === cpf);
-
-  if (!customer) {
-    return res
-      .status(400)
-      .json({ ERRO: "O cliente informado não possui uma conta" });
-  }
+app.get("/statement", verifyIfExistAcountCpf, (req, res) => {
+  const { customer } = req;
   return res.json(customer.statement);
 });
 
