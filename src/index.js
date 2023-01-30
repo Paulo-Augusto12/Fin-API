@@ -165,7 +165,7 @@ app.get("/balance", verifyIfExistAcountCpf, (req, res) => {
 
   const balance = getBalance(customer.statement);
 
-  return res.status(200).json({SALDO_DISPONIVEL : balance});
+  return res.status(200).json({ SALDO_DISPONIVEL: balance });
 });
 
 app.listen(3333);
