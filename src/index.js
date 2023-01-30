@@ -158,4 +158,14 @@ app.delete("/accounts", verifyIfExistAcountCpf, (req, res) => {
   return res.status(200).json(customers);
 });
 
+// pegar o saldo atual de um usuário
+
+app.get("/balance", verifyIfExistAcountCpf, (req, res) => {
+  const { customer } = req;
+
+  const balance = getBalance(customer.statement);
+
+  return res.status(200).json({SALDO_DISPONIVEL : balance});
+});
+
 app.listen(3333);
