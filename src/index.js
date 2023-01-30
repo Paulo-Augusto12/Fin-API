@@ -60,8 +60,12 @@ app.post("/accounts", (req, res) => {
   return res.status(201).send();
 });
 
-app.get("/accounts", (req, res) => {
-  res.status(200).send(customers);
+// obter os dados de uma conta
+
+app.get("/accounts", verifyIfExistAcountCpf, (req, res) => {
+  const { customer } = req;
+
+  return res.status(200).send(customer);
 });
 
 // Buscar e listar um extrato de cliente
@@ -130,6 +134,18 @@ app.get("/statement/date", verifyIfExistAcountCpf, (req, res) => {
   );
 
   return res.json(statement);
+});
+
+// atualizar os dados da conta
+
+app.put("/accounts", verifyIfExistAcountCpf, (req, res) => {
+  const { name } = req.body;
+
+  const { customer } = req;
+
+  customer.name = name;
+
+  return res.status(201).send();
 });
 
 app.listen(3333);
