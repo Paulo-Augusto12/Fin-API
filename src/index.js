@@ -148,4 +148,14 @@ app.put("/accounts", verifyIfExistAcountCpf, (req, res) => {
   return res.status(201).send();
 });
 
+// deletar a conta de um cliente
+
+app.delete("/accounts", verifyIfExistAcountCpf, (req, res) => {
+  const { customer } = req;
+
+  customers.splice(customer, 1);
+
+  return res.status(200).json(customers);
+});
+
 app.listen(3333);
